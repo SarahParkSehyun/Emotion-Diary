@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { DiaryDispatchContext } from "../App";
+import { DiaryStateContext } from "../App";
 import { getStringDate } from "../util/date";
 import MyHeader from "../components/MyHeader";
 import MyButton from "../components/MyButton";
@@ -8,7 +8,7 @@ import { emotionList } from "../util/emotion";
 
 const Diary = () => {
   const { id } = useParams();
-  const diaryList = useContext(DiaryDispatchContext);
+  const diaryList = useContext(DiaryStateContext);
   const navigate = useNavigate();
   const [data, setData] = useState();
 
@@ -34,8 +34,9 @@ const Diary = () => {
   if (!data) {
     return <div className="DiaryPage">로딩중입니다...</div>;
   } else {
-
-    const curEmotionData = emotionList.find((it) => parseInt(it.emotion_id) === parseInt(data.emotion));
+    const curEmotionData = emotionList.find(
+      (it) => parseInt(it.emotion_id) === parseInt(data.emotion)
+    );
     return (
       <div className="DiaryPage">
         <MyHeader

@@ -1,3 +1,5 @@
+import React from "react";
+
 const EmotionItem = ({ emotion_id, emotion_img, emotion_descript, onClick, isSelected }) => {
   return (
     <div onClick={() => onClick(emotion_id)}
@@ -5,7 +7,7 @@ const EmotionItem = ({ emotion_id, emotion_img, emotion_descript, onClick, isSel
       <img src={emotion_img} />
       <span>{emotion_descript}</span>
     </div>
-  )
+  );
 };
 
-export default EmotionItem;
+export default React.memo(EmotionItem);

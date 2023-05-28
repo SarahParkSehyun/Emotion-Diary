@@ -13,7 +13,6 @@ const reducer = (state, action) => {
   switch (action.type) {
     case 'INIT': {
       return action.data;
-      break;
     }
     case 'CREATE': {
       newState = [action.data, ...state];

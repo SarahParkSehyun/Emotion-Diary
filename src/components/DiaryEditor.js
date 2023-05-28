@@ -2,20 +2,23 @@ import MyButton from "./MyButton";
 import MyHeader from "./MyHeader";
 import { getStringDate } from "../util/date";
 import { useNavigate } from "react-router-dom"
-import { useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import EmotionItem from "./EmotionItem";
 import { DiaryDispatchContext } from "../App";
 import { emotionList } from "../util/emotion";
 
-const DiaryEditor = (isEdit, originData) => {
+const env = process.env;
+env.PUBLIC_URL = env.PUBLIC_URL || "";
+
+const DiaryEditor = ({ isEdit, originData }) => {
   const contentRef = useRef();
   const [content, setContent] = useState("");
   const [date, setDate] = useState(getStringDate(new Date()));
   const [emotion, setEmotion] = useState(3);
 
-  const handleClickEmote = (emotion) => {
+  const handleClickEmote = useCallback((emotion) => {
     setEmotion(emotion);
-  }
+  }, []);
   const { onCreate, onEdit, onRemove } = useContext(DiaryDispatchContext);
 
   const handleSubmit = () => {
@@ -32,14 +35,14 @@ const DiaryEditor = (isEdit, originData) => {
     }
     onCreate(date, content, emotion);
     navigate('/', { replace: true })
-  }
+  };
 
   const handleRemove = () => {
     if (window.confirm('정말 삭제하시겠습니까?')) {
       onRemove(originData.id);
       navigate('/', { replace: true });
     }
-  }
+  };
   const navigate = useNavigate();
   useEffect(() => {
     if (isEdit) {
@@ -47,15 +50,24 @@ const DiaryEditor = (isEdit, originData) => {
       setEmotion(originData.emotion);
       setContent(originData.content);
     }
-  }, [isEdit, originData])
+  }, [isEdit, originData]);
+
   return (
     <div className="DiaryEditor">
       <MyHeader
         headText={isEdit ? "일기 수정하기" : "새 일기쓰기"}
-        leftChild={<MyButton text={"< 뒤로가기"}
-          onClick={() => navigate(-1)}
-        />}
-        rightChild={isEdit && <MyButton text={'삭제하기'} type={"negative"} onClick={handleRemove} />}
+        leftChild={
+          <MyButton text={"< 뒤로가기"} onClick={() => navigate(-1)} />
+        }
+        rightChild={
+          isEdit && (
+            <MyButton
+              text={'삭제하기'}
+              type={"negative"}
+              onClick={handleRemove}
+            />
+          )
+        }
       />
       <div>
         <section>
@@ -88,7 +100,8 @@ const DiaryEditor = (isEdit, originData) => {
               placeholder="오늘은 어땠나요"
               ref={contentRef}
               value={content}
-              onChange={(e) => setContent(e.target.value)} />
+              onChange={(e) => setContent(e.target.value)}
+            />
           </div>
         </section>
         <section>
@@ -96,7 +109,6 @@ const DiaryEditor = (isEdit, originData) => {
             <MyButton text={"취소하기"} onClick={() => navigate(-1)} />
             <MyButton text={"작성완료"} type={'positive'} onClick={handleSubmit} />
           </div>
-
         </section>
       </div>
     </div>
